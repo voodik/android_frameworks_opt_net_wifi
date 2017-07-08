@@ -664,6 +664,11 @@ public class WifiServiceImpl extends IWifiManager.Stub {
         return true;
     }
 
+    public boolean setWifiEnabled( boolean enable)
+         throws RemoteException {
+            return setWifiEnabled("com.android.shell", enable);
+    }
+
     /**
      * see {@link WifiManager#getWifiState()}
      * @return One of {@link WifiManager#WIFI_STATE_DISABLED},
