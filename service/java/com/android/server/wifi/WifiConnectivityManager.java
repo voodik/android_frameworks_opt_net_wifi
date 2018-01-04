@@ -239,6 +239,9 @@ public class WifiConnectivityManager {
             connectToNetwork(candidate);
             return true;
         } else {
+            if (mStateMachine.isDisconnected()){
+                mStateMachine.reassociateCommand();
+            }
             return false;
         }
     }
