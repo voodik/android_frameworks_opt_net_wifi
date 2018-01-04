@@ -3803,7 +3803,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
     void handlePostDhcpSetup() {
         /* Restore power save and suspend optimizations */
         setSuspendOptimizationsNative(SUSPEND_DUE_TO_DHCP, true);
-        mWifiNative.setPowerSave(true);
+        mWifiNative.setPowerSave(!SystemProperties.getBoolean("persist.no_wlan_ps", false));
 
         mWifiP2pChannel.sendMessage(WifiP2pServiceImpl.BLOCK_DISCOVERY,
                 WifiP2pServiceImpl.DISABLED);
@@ -4972,7 +4972,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
                 // it was not started yet.
                 mWifiConnectivityManager.handleScreenStateChanged(mScreenOn);
             }
-            mWifiNative.setPowerSave(true);
+            mWifiNative.setPowerSave(!SystemProperties.getBoolean("persist.no_wlan_ps", false));
 
             if (mP2pSupported) {
                 if (mOperationalMode == CONNECT_MODE) {
@@ -7056,6 +7056,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
                 final IpManager.ProvisioningConfiguration prov =
                         mIpManager.buildProvisioningConfiguration()
                             .withPreDhcpAction()
+                            .withoutIpReachabilityMonitor()
                             .withApfCapabilities(mWifiNative.getApfCapabilities())
                             .build();
                 mIpManager.startProvisioning(prov);
@@ -7075,6 +7076,7 @@ public class WifiStateMachine extends StateMachine implements WifiNative.WifiRss
                     final IpManager.ProvisioningConfiguration prov =
                             mIpManager.buildProvisioningConfiguration()
                                 .withStaticConfiguration(config)
+                                .withoutIpReachabilityMonitor()
                                 .withApfCapabilities(mWifiNative.getApfCapabilities())
                                 .build();
                     mIpManager.startProvisioning(prov);
